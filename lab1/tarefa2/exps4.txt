@@ -1,0 +1,6 @@
+calc .1
+calc 1!+2.*3
+calc 13+  8.7
+calc (3.5 + 7.8)! - abs(13) / 12
+calc abs(3. + 0.7)
+calc 5 + abs(.)

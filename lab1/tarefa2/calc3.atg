@@ -1,0 +1,17 @@
+COMPILER Calc4
+
+CHARACTERS 
+    digito = "0123456789".
+TOKENS
+    num = digito { digito } ["." { digito }] | "." digito { digito }.
+
+IGNORE '\t' + '\r'
+
+PRODUCTIONS
+    Calc4 = Linha { Linha }.
+    Linha = "calc" Exp '\n'.
+    Exp = Termo { ("+"|"-") Termo }.
+    Termo = Fator { ("*"|"/") Fator }.
+    Fator = num | "(" Exp ")".
+
+END Calc4.

@@ -1,0 +1,30 @@
+/* Compilar: java -jar ../Coco.jar -frames ..  copia.atg
+   Rodar: javac *.java
+   Executar: java Compile nomeArq.txt
+ */
+
+import java.io.* ;   /* antes da definicao do compilador */
+
+COMPILER Copia
+
+String saida;       /* Dentro do parser */
+
+CHARACTERS
+    digito = "0123456789".
+
+TOKENS
+    num = digito {digito}.
+IGNORE '\t' + '\r'
+
+PRODUCTIONS 
+    Copia = Linha { Linha } .
+    Linha
+     = "calc" Exp           (. System.out.println(saida); .)    /* codigo no corpo da regra */
+       "\n"
+    .
+    Exp 
+    = num                   (. saida = t.val; .)
+      { "+" num             (. saida += " + " + t.val; .)
+      }
+    .
+END Copia. 
