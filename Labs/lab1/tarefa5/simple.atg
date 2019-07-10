@@ -1,0 +1,38 @@
+COMPILER Simple
+
+CHARACTERS
+    digito = "0123456789".
+    lMai = 'A'..'Z'.
+    lMin = 'a'..'z'.
+    letra = lMai + lMin.
+    lf = '\n'.
+
+TOKENS
+    numero = digito {digito}.
+    ident = letra {letra | digito}.
+
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO lf
+
+IGNORE '\r' + '\t' + '\n'
+
+PRODUCTIONS
+
+    Simple	=	"program" ident "{"  {VarDecl} {FunDecl} "}".
+    FunDecl	=	"void" ident "(" ")" "{" { VarDecl | Cmd} "}".
+    VarDecl	=	Tipo ident {"," ident} ";".
+    Tipo	=	"int".
+    Cmd     =	ident "=" Expr ";"
+            |	ident "(" ")" ";"
+            |	"if" "(" Expr ")" Cmd ["else" Cmd]
+            |	"while" "(" Expr ")" Cmd
+            |	"read" ident ";"
+            |	"write" Expr ";"
+            |	"{" { VarDecl | Cmd } "}".
+    Expr	=	AriExpr [RelOp AriExpr].
+    AriExpr	=	Term {("+"|"-") Term}.
+    Term	=	Fator {("*"|"/") Fator}.
+    Fator	=	ident | numero | "-" Fator | "(" Expr ")".
+    RelOp	=	"==" | "<" | ">" | "<=" | ">=".
+
+END Simple.

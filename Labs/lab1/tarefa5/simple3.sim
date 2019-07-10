@@ -1,0 +1,65 @@
+/*
+
+- Operador %.
+- Números não podem iniciar com 0, a não ser que o número seja o próprio 0.
+- Suporte a números em forma hexadecimal (0x21ef, 0XfffF).
+- Tipo booleano com constantes true e false;
+- Suporte a instrução do-while com break e continue.
+- Instruções de incremento e decremento (não como expressões!).
+- Laço for como em Python (for i in 1..10 ...).
+- Cláusula elif.
+
+*/
+
+program Test {
+
+	int i;
+    bool l;
+  
+	// calcula soma de 1..i
+	void SumUp() {
+		int sum;
+		sum = 0;
+		while (i > 0) { sum = sum + i; i = i - 1; }
+		write sum;
+	}
+    
+	// programa comeca aqui!
+	void Main() {
+        l = false;
+		read i;
+        if (i < 0xAf) {
+            while (i > 0) {
+                if (i%2 == 0)
+                    SumUp();
+                read i;
+            }
+            int k;
+            for k in 1..10 {
+                if (k * i > 5) {
+                    -- k;
+                    continue;
+                } 
+                if (k < 3)
+                    write 0;
+                elif (k < 7)
+                    write 1;
+                else
+                    write 2;
+            }
+            if (i == 0) {
+                l = true;
+                write 0;
+            } else {
+                do {
+                    i ++;
+                    if (i < 0)
+                        break;
+                } while (i < 0);
+                write -1; /* erro aqui! */
+            }
+        }
+	}
+}
+
+

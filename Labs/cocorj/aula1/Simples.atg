@@ -1,0 +1,10 @@
+COMPILER Simples
+
+PRODUCTIONS
+
+	$checkEOF=false
+
+	Simples = A.
+	A = "a" A "c" | "b".
+
+END Simples.

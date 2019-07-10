@@ -1,0 +1,42 @@
+/*
+
+- Operador %.
+- Números não podem iniciar com 0, a não ser que o número seja o próprio 0.
+- Suporte a números em forma hexadecimal (0x21ef, 0XfffF).
+- Tipo booleano com constantes true e false;
+
+*/
+
+program Test {
+
+	int i;
+    bool l;
+  
+	// calcula soma de 1..i
+	void SumUp() {
+		int sum;
+		sum = 0;
+		while (i > 0) { sum = sum + i; i = i - 1; }
+		write sum;
+	}
+    
+	// programa comeca aqui!
+	void Main() {
+        l = true;
+		read i;
+        if (i < 0xAf) {
+            while (i > 0) {
+                if (i % 2 == 0)
+                    SumUp();
+                read i;
+            }
+            if (i == 0) {
+                l = false;
+                write 0;
+            } else
+                write -01; /* erro aqui! */
+        }
+	}
+}
+
+

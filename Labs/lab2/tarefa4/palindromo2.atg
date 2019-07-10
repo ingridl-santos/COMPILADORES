@@ -1,0 +1,7 @@
+COMPILER Palindromo2
+
+PRODUCTIONS
+    Palindromo2 = Pal EOF.
+    Pal = "a"  Pal  "a" | "b"  Pal  "b" | "a" | "b" .
+END Palindromo2.
+
