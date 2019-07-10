@@ -1,0 +1,5 @@
+a .
+A a .
+B a A a .
+X f Z E a c .
+a F G h c .    # erro

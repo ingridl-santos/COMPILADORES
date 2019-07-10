@@ -1,0 +1,26 @@
+COMPILER Calc4 $F
+
+CHARACTERS
+    digito = "0123456789".
+
+TOKENS
+    num = digito { digito } [ "." { digito } ]
+        | "." digito { digito }.
+
+IGNORE '\t'+'\r'
+
+PRODUCTIONS
+    Calc4 = Linha LinhaR.
+    LinhaR = Linha LinhaR | .
+    Linha = "calc" Exp "\n" .
+    Exp = Termo ExpR .
+    ExpR = SomaSub Termo ExpR | .
+    Termo = Unario TermoR .
+    TermoR = ProdutoDiv Unario TermoR | .
+    Unario = Fator UnarioR .
+    UnarioR = "!" UnarioR | .
+    Fator = num | "(" Exp ")" | "abs" "(" Exp ")".
+    SomaSub = "+" | "-".
+    ProdutoDiv = "*" | "/".
+
+END Calc4.

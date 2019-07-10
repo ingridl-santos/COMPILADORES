@@ -1,0 +1,25 @@
+COMPILER Letras
+
+CHARACTERS
+    lMinus = 'a'..'z'.
+    lMais = 'A'..'Z'.
+    vMais = "AEIOU".
+    cMais = lMais - vMais.
+
+TOKENS
+    letraMinuscula = lMinus.
+    vogalMaiscula = vMais.
+    consoanteMaiscula = cMais.
+
+IGNORE '\r'+'\t'+'\n'
+
+PRODUCTIONS
+
+Letras = Linha { Linha } .
+Linha = { Sentenca } "." .
+Sentenca = letraMinuscula 
+         | vogalMaiscula Sentenca
+         | consoanteMaiscula Sentenca Sentenca
+. 
+
+END Letras.

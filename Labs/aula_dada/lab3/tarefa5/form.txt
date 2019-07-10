@@ -1,0 +1,17 @@
+#
+# Exemplo de formulário sobre curso de esporte
+# em escola do ensino medio
+#
+
+TEXTO "Qual o seu nome?"
+
+ESCOLHAUMA "Qual o seu sexo?"
+("Feminino", "Masculino")
+
+ESCOLHAVARIAS "Que esportes voce praticou esse ano?"
+("Futebol", "Voley", "Basquete", "Handebol", "Outros")
+
+ESCOLHAUMA "O que voce achou do curso este ano?"
+("Fraco", "Regular", "Bom", "Excelente")
+
+TEXTO "O que voce sugere que seja diferente no proximo ano?"
