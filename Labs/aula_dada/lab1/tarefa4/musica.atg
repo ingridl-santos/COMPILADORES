@@ -1,0 +1,20 @@
+COMPILER Musica
+
+CHARACTERS
+    letra = 'A'..'Z'+'a'..'z'.
+    especial = "-,!.:".
+TOKENS
+    palavra = letra { letra }.
+    pontuacao = especial.
+IGNORE '\r' + '\t'
+
+PRODUCTIONS
+    Musica = Linha { Linha }.
+    Linha = [ Notas ] "\n" Sentenca "\n".
+    Notas = Nota { Nota }.
+    Nota = "C" | "C#" | "Db" | "D" | "D#" | "Eb" | "E" 
+        | "F" | "F#" | "Gb" | "G" | "G#" | "Ab" | "A"
+        | "A#" | "Bb" | "B".
+    Sentenca = (palavra | pontuacao) 
+        { palavra | pontuacao }.
+END Musica.

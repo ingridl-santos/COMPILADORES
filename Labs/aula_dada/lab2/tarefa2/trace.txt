@@ -1,0 +1,52 @@
+
+First & follow symbols:
+----------------------
+
+Calc4
+first:   "calc" 
+follow:  EOF 
+
+Linha
+first:   "calc" 
+follow:  EOF "calc" 
+
+LinhaR
+first:   "calc" 
+follow:  EOF 
+
+Exp
+first:   num "(" "abs" 
+follow:  "\n" ")" 
+
+Termo
+first:   num "(" "abs" 
+follow:  "\n" ")" "+" "-" 
+
+ExpR
+first:   "+" "-" 
+follow:  "\n" ")" 
+
+SomaSub
+first:   "+" "-" 
+follow:  num "(" "abs" 
+
+Unario
+first:   num "(" "abs" 
+follow:  "\n" ")" "+" "-" "*" "/" 
+
+TermoR
+first:   "*" "/" 
+follow:  "\n" ")" "+" "-" 
+
+ProdutoDiv
+first:   "*" "/" 
+follow:  num "(" "abs" 
+
+Fator
+first:   num "(" "abs" 
+follow:  "\n" "!" ")" "+" "-" "*" "/" 
+
+UnarioR
+first:   "!" 
+follow:  "\n" ")" "+" "-" "*" "/" 
+

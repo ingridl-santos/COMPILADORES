@@ -1,0 +1,107 @@
+/*
+	Interpretador feito em sala de aula, v. 0
+*/
+import java.io.*;
+
+class Erro {
+	boolean bErro; /* estado de erro */
+	String status; /* qual o erro */
+
+	public Erro()
+	{
+		bErro = false;
+		status = "";
+	}
+
+	public void setDivZero()
+	{
+		bErro = true;
+		status = "divisao por zero!";
+	}
+
+	public void setNegFat()
+	{
+		bErro = true;
+		status = "fatorial de numero negativo!";
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public boolean getErro()
+	{
+		return bErro;
+	}
+}
+
+COMPILER Calc
+
+Erro e;
+
+float abs(float v) {
+	return v >= 0? v: -v;
+}
+
+int fat(int v) {
+	return v == 0? 1: v * fat(v-1);
+}
+
+void show(float v) {
+	if (e.getErro())
+		System.out.println("  ERRO: " + e.getStatus());
+	else if (v%1 == 0)
+		System.out.println("  " + (int)v);
+	else
+		System.out.println("  " + v);
+}
+
+CHARACTERS
+	digito = "0123456789".
+TOKENS
+	numero = digito {digito}.
+IGNORE  '\n' + '\r' + '\t'
+
+PRODUCTIONS
+
+Calc 				(. float v = 0; e = new Erro(); .)
+= Exp<out v>		(. show(v); .) 
+  EOF 
+.
+
+Exp<out float v> 	(. float v1, v2, sinal; v1 = v2 = 0; sinal = 1; .)
+= ["-"				(. sinal = -1; .)
+  ] T<out v1> 		(. v = sinal * v1; .)
+  { "+" T<out v2>	(. v += v2; .)
+  | "-" T<out v2>	(. v -= v2; .)
+  }
+.
+
+T<out float v> 		(. float v1, v2; v1 = v2 = 0; .)
+= U<out v1> 		(. v = v1; .)
+  { "*" U<out v2>	(. v *= v2; .)
+  | "/" U<out v2>	(. if (v2 == 0)
+  						 e.setDivZero();
+					   else 
+					     v /= v2; 
+  					.)
+  }
+.
+
+U<out float vu>		(. float v = 0; vu = 0; .) 
+= F<out v> 			(. vu = v; .)
+    {"!"			(. if (vu < 0) e.setNegFat(); else vu = fat((int)vu); .)
+    }
+.
+
+F<out float v>		(. float vexp = 0; v = 0; .) 
+= numero			(. v = Float.parseFloat(t.val); .)
+| "(" Exp<out vexp>	(. v = vexp; .) 
+  ")"
+| "abs" 	
+  "(" Exp<out vexp>	(. v = abs(vexp); .)
+  ")"
+.
+
+END Calc.

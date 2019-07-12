@@ -1,0 +1,48 @@
+COMPILER Familia
+
+CHARACTERS
+    lMais = 'A'..'Z'.
+    lMinus = 'a'..'z'.
+    letra = lMais + lMinus.
+    digito = "0123456789".
+    Especiais = "'-'".
+
+TOKENS
+    palavra = lMinus { lMinus }.
+    num = digito { digito }.
+    nome = lMais { lMinus | lMais | Especiais }.
+
+IGNORE '\t' + '\r'
+
+PRODUCTIONS
+    Familia = Sobrenome { Secao }.
+    Secao = Pais | Filhos | Avos | Netos | Outros.
+
+    Sobrenome = "Sobrenome:" nome "\n".
+    Pais      = "Pais:"      ListaNomes "\n".
+    Filhos    = "Filhos:"    ListaNomes "\n".
+    Avos      = "Avos:"      ListaNomes "\n".
+    Netos     = "Netos:"     ListaNomes "\n".
+    Outros    = "Outros:"    ListaFrases "\n".
+    
+    ListaNomes = NomeComentado { "," NomeComentado }.
+    NomeComentado = NomeComposto [ Falecido ] [ Comentario ].
+    NomeComposto = nome { palavra | nome }.
+    Falecido = "(" "falecido" ")".
+    Comentario = "[" Frase "]".
+
+    ListaFrases = Frase { "," Frase }.
+    Frase = (palavra | nome | num) { palavra | nome | num }.
+END Familia.
+
+/* 
+Sobrenome: Silva-Junior
+Pais: Pedro Henrique, Eva
+Filhos: Paulo David, Carlos Marcio, Helen, Ana Maria
+Avos: Joao Lima da Silva (falecido) [ pai de Pedro Henrique ], Ana Silva, Joao Freire, Maria Cristina Freire [ mae de Eva ]
+Netos: Ian McGegor [ filho de Paulo David ], Peter O'Toole
+Outros: 1 carro pequeno, 1 casa, 2 gatos
+-- As secoes podem vir em qualquer ordem exceto por Sobrenome que eh sempre a primeira
+-- Devem ser suportados nomes como O'Toole, McGregor, Baeza-Yates
+
+*/

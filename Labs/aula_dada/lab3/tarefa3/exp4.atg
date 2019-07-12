@@ -1,0 +1,31 @@
+import java.io.*;           
+
+COMPILER Copia
+
+String exp;
+
+CHARACTERS
+    digito = "0123456789".
+TOKENS
+    num = digito { digito }.
+IGNORE '\t'+'\r'
+
+PRODUCTIONS
+    Copia = Linha { Linha } .
+
+    Linha                   (. int v; .) 
+    = "calc" Exp<out v>     (. System.out.println(exp + " = " + v); .)    
+      "\n"
+    .
+
+    Exp<out int v>          (. v = 0; .)
+    = num                   (. exp = t.val; 
+                               v = Integer.parseInt(t.val); .)
+      { ( "+" num           (. exp += " + " + t.val; 
+                               v += Integer.parseInt(t.val); .)
+        | "-" num           (. exp += " - " + t.val; 
+                               v -= Integer.parseInt(t.val); .)
+        )
+      } 
+    .
+END Copia.
