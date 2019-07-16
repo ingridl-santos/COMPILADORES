@@ -1,0 +1,306 @@
+/*
+	microc
+*/
+
+/* DOT */
+import java.util.List;
+import java.util.ArrayList;
+
+class NodeInfo {
+	int tipo;
+	public String id;
+	
+	public static final int start = 0;
+	public static final int stop = 1;
+	public static final int conector = 2;
+	public static final int condicao = 3;
+	public static final int paralelo = 4;
+	public static final int note = 5;
+	public static final int instrucao0 = 6;
+	public static final int instrucao1 = 7;
+	public static final int instrucao2 = 8;
+	public static final int instrucao3 = 9;
+	public static final int instrucao4 = 10;
+	public static final int instrucao5 = 11;
+
+	public NodeInfo(int tipo, String id) {
+		this.id = id;
+		this.tipo = tipo;
+	} 
+}
+
+class EdgeInfo {
+	public int tipo;
+	public String id;
+
+	public static final int normal = 0;
+	public static final int note = 1;
+
+	public EdgeInfo(int tipo, String id) {
+		this.id = id;
+		this.tipo = tipo;
+	}
+}
+
+class MicroC {
+	Graph g;
+	int cvertex;
+	Vertex lastv;
+	String curlabel;
+	
+	public MicroC() {
+		g = new Graph();
+		cvertex = 0;
+		lastv = null;
+		curlabel = "";
+	}
+
+	public void setLastVertex(Vertex v) {
+		lastv = v;
+	}
+
+	public void getLastVertex() {
+		return lastv;
+	}
+
+	public void setCurLabel(String label) {
+		if (label.length() > 2) {
+			curlabel = label.substring(1, label.length() - 1);
+		}
+	}
+
+	private Vertex addNode(int ntype, String label) {
+		cvertex++;
+		String nid = String.valueOf(cvertex);
+		NodeInfo ninfo =  new NodeInfo(ntype, nid, label);
+		return g.addVertex(nid, ninfo);
+	}
+
+	public void addEdgeTo(Vertex v) {
+		if (lastv != null) {
+			g.addEdge(lastv, v, new EdgeInfo(EdgeInfo.normal, "", curlabel));
+		}
+		curlabel = "";
+		lastv = v;
+	}
+
+	public void addStart() {
+		lastv =  addNode(NodeInfo.start, "start");
+	}
+
+	public void addStop() {
+		Vertex v = addNode(NodeInfo.stop, "stop");
+		addEdgeTo(v);
+	}
+
+	public Vertex addIf(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v =  addNode(NodeInfo.condicao, s);
+		addEdgeTo(v);
+		return v;
+	}
+
+	public Vertex addFreeConector() {
+		return addNode(NodeInfo.conector, "");
+	}
+
+	public Vertex addConector() {
+		Vertex v = addNode(NodeInfo.conector, "");
+		addEdgeTo(v);
+		return v;
+	}
+
+	public Vertex addFreeParalelo() {
+		return addNode(NodeInfo.paralelo, "");
+	}
+
+	public Vertex addParalelo() {
+		Vertex v = addNode(NodeInfo.paralelo, "");
+		addEdgeTo(v);
+		return v;
+	}
+
+	public Vertex addRepete(Vertex vc, String label1, String label2) {
+		String s = label1.substring(1, label1.length() - 1);
+		Vertex v = addNode(NodeInfo.condicao, s);
+		addEdgeTo(v);
+		if (label2.length() > 2) {
+			curlabel = label2.substring(1, label2.length - 1);
+		}
+		addEdgeTo(vc);
+		lastv = v;
+		return v;
+	}
+
+	public Vertex addWhile(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v = addNode(NodeInfo.condicao, s);
+		addEdgeTo(v);
+		return v;
+	}
+
+	public void addNote(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v = addNode(NodeInfo.note, s);
+		g.addEdge(v, lastv, new EdgeInfo(EdgeInfo.note, "", ""));
+	}
+
+	public void addNormal(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v  = addNode(NodeInfo.instrucao0, s);
+	}
+
+	public void addDup(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v = addNode(NodeInfo.instrucao1, "|" + s + "|");
+		addEdgeTo(v);
+	}
+
+	public void addIn(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v = addNode(NodeInfo.instrucao2, s);
+		addEdgeTo(v);
+	}
+
+	public void addOut(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v = addNode(NodeInfo.instrucao3, s);
+		addEdgeTo(v);
+	}
+
+	public void addPar(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v = addNode(NodeInfo.instrucao4, s);
+		addEdgeTo(v);
+	}
+
+	public void addRect(String label) {
+		String s = label.substring(1, label.length() - 1);
+		Vertex v = addNode(NodeInfo.instrucao5, s);
+		addEdgeTo(v);
+	}
+
+	public void toDot() {
+		NodeInfo n, n2;
+		System.out.println("digraph {");
+		System.out.println("  outputorder=edgesfirst;");
+		String s;
+
+		String[] properties =  new String[12];
+		properties[NodeInfo.start] = "[shape=ellipse, fillcolor=palegreen2, style=filled";
+		properties[NodeInfo.stop] = "[shape=ellipse, fillcolor=salmon, style=filled";
+		properties[NodeInfo.condicao] = "[shape=hexagon, fillcolor=lightyellow, style=filled";
+		properties[NodeInfo.conector] = "[shape=diamond, fillcolor=lightyellow," + 
+			" fixedsize=true, width=0.3, height=0.3, style=filled";
+		properties[NodeInfo.paralelo] = "[shape=box, fillcolor=black," + 
+			" fixedsize=true, height=0.1, width=2, style=filled";
+		properties[NodeInfo.note] = "[shape=note, fillcolor=yellow, style=filled";
+		properties[NodeInfo.instrucao0] = "[shape=box, style=\"rounded,filled\", fillcolor=lightyellow";
+		properties[NodeInfo.instrucao1] = "[shape=record, fillcolor=lightyellow, style=filled";
+		properties[NodeInfo.instrucao2] = "[shape=larrow, fillcolor=lightyellow, style=filled";
+		properties[NodeInfo.instrucao3] = "[shape=rarrow, fillcolor=lightyellow, style=filled";
+		properties[NodeInfo.instrucao4] = "[shape=parallelogram, fillcolor=lightyellow, style=filled";
+		properties[NodeInfo.instrucao5] = "[shape=box, fillcolor=lightyellow, style=filled";
+
+		for (Vertex v : g.getVertices()) {
+			n = (NodeInfo)v.info;
+			s = "  " + n.id + properties[n.tipo];
+				s = s + ", label=\"" + n.label + "\"];";
+			System.out.println(s);
+		}
+
+		for (Vertex v : g.getVertices()) {
+			n = (NodeInfo)v.info;
+			for (Edge e : g.getEdges(v.name)) {
+				Vertex w = e.dest;
+				n2 = (NodeInfo)w.info;
+				s = "  " + s.id + " -> " + n2.id;
+				if (e.info != null) {
+					if (((EdgeInfo)e.info).type == EdgeInfo.note)
+						s += "[style = dashed";
+					else
+						s += "[style = \"\"";
+					if (((EdgeInfo)e.info).label.equals(""))
+						s = s + "];";
+					else
+						s = s + ", label=\"" + ((EdgeInfo)e.info).label + "\"];";
+				}
+				System.out.println(s);
+			}
+		}
+		System.out.println("}");
+	}
+}
+
+
+
+COMPILER microc
+
+MicroC m;
+
+CHARACTERS
+	semAspas 	= ANY - '"'.
+	letra 		= "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_".
+	digito 		= "0123456789".
+
+TOKENS
+	id 		    = letra {letra | digito}.
+	strConst 	= '"' {semAspas} '"'.
+	num 		  = ['-'] digito { digito } .
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\r' + '\n' + '\t'
+
+PRODUCTIONS
+
+	microc  = {DeclConst} {Definicao} .												(. m = new MicroC(); m.toDot();	.)
+
+  	DeclConst = "const" Tipo id "=" num ";" .
+
+	Definicao = ( Tipo | "void" ) DesigI ( DeclVar | DeclFuncao ) .
+
+	DeclVar = {"," DesigI } ";" .
+
+  	DeclFuncao = "(" [ Tipo DesigI {"," Tipo  DesigI	} ] ")" CBlock .			(. m.addStart(); .)
+	
+	Tipo = "int" .		
+
+	DesigI = id	.
+
+	CBlock = "{" {Definicao | Instrucao} "}" .									
+
+	Instrucao = Designador ( Atrib | Parametros ) ";"                     			(. m.addStop(); .)
+      | While | For | IfElse | Return | Printf | Scanf | CBlock | ";"
+  .
+
+	Atrib = "=" Expr .
+
+	While = "while" "(" Condicao ")" Instrucao .
+
+	For = "for"	"(" Designador Atrib ";" Condicao";" Designador Atrib ")" Instrucao .
+
+	IfElse = "if" "(" Condicao ")"  Instrucao  ("else" Instrucao | ) .
+
+	Return = "return" (Expr | ) ";".
+
+	Printf = "printf" "(" ( strConst | Expr ) {"," ( strConst | Expr ) } ")" ";" .
+
+  	Scanf	= "scanf" "(" Designador ";" .
+
+  	Parametros = "("  [ Expr {"," Expr } ] ")" .
+
+	Condicao = Expr OpRel Expr .
+
+	OpRel	= "==" | "!=" | ">" | ">=" | "<" | "<=" .
+
+	Expr = ( Termo | "-" Termo ) {( "+" | "-" ) Termo } .	
+
+	Termo	= Fator {( "*" | "/" | "%" ) Fator } .
+
+	Fator =  Designador [ Parametros ] | num | "(" Expr ")" .
+
+	Designador = id .
+
+END microc.
+
